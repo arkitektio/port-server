@@ -1,0 +1,24 @@
+version: "3.4"
+
+services:
+  port:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8090
+    ports:
+      - 8060:8060
+    volumes:
+      - .:/worskpace:cached
+    env_file:
+      - port.env
+  flabberl:
+    image: postgres:12.6-alpine
+    env_file:
+      - port.env
+
+
+
+networks:
+  default:
+    external:
+      name: dev
+
