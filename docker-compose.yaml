@@ -8,6 +8,8 @@ services:
       - 8060:8060
     volumes:
       - .:/worskpace:cached
+      - /var/run/docker.sock:/var/run/docker.sock 
+
     env_file:
       - port.env
   flabberl:

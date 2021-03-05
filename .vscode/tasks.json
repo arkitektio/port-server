@@ -14,5 +14,10 @@
             "type": "shell",
             "command": "python manage.py makemigrations && python manage.py migrate"
         },
+        {
+            "label": "Haven",
+            "type": "shell",
+            "command": "python manage.py runhaven"
+        },
     ]
 }

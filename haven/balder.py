@@ -6,6 +6,7 @@ import requests
 import graphene
 from graphene.types.generic import GenericScalar
 import re
+from delt.bridge import arkitekt
 
 dockstring = re.compile(r"(?P<namespace>[^\/]*)\/(?P<repo>[^\:]*)\:(?P<tag>[^\s]*)")
 
@@ -39,8 +40,9 @@ class CreatePort(BalderMutation):
         node = graphene.ID(required=True, description="The Node id")
 
 
-    @bounced(anonymous=True)
+    @bounced(only_jwt=True)
     def mutate(root, info, *args, namespace=None,  repo=None,  tag=None, q=None, env=None, node=None):
+        token = info.context.bounced.token
 
         if q:
             match = dockstring.match(q)
@@ -67,15 +69,13 @@ class CreatePort(BalderMutation):
                 }
             """
 
-            result = requests.post("http://arkitekt:8090/graphql", json={"query": createTemplateMutation, "variables": {
+            answer = arkitekt.call(createTemplateMutation, {
                 "node": node,
                 "params": {"docker": True}
-            }})
+            }, token)
 
-            answer = result.json()
-            print(answer)
 
-            arkitekt_id = answer["data"]["createTemplate"]["id"]
+            arkitekt_id = answer["createTemplate"]["id"]
 
         except:
             raise Exception("Couldn't create a Template on the associated Arkitekt")
