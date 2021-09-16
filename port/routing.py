@@ -3,8 +3,8 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from django.conf.urls import url
 from django.core.asgi import get_asgi_application
 from balder.consumers import MyGraphqlWsConsumer
-from herre.middlewares.scope.bouncer import BouncerChannelMiddleware
-from herre.middlewares.scope.jwt import JWTChannelMiddleware
+from lok.middlewares.scope.bouncer import BouncerChannelMiddleware
+from lok.middlewares.scope.jwt import JWTChannelMiddleware
 
 # The channel routing defines what connections get handled by what consumers,
 # selecting on either the connection type (ProtocolTypeRouter) or properties

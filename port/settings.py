@@ -11,75 +11,55 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
 from pathlib import Path
-from delt.initialize import initialize
+from omegaconf import OmegaConf
 
-
-initialize()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+conf = OmegaConf.load(os.path.join(BASE_DIR,'config.yaml'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '9=9u7c35!*p_h674kv*t^8ntefnf*#)z_h%6$#b(oe=asdasdawawsdawdwaw+'
+SECRET_KEY = conf.security.secret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = conf.server.debug or False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = conf.server.hosts
 
 
 ELEMENTS_HOST = "p-tnagerl-lab1"
-ELEMENTS_INWARD = "port" # Set this to the host you are on
-ELEMENTS_PORT = 8060 # Set this to the host you are on
+ELEMENTS_INWARD = "fluss" # Set this to the host you are on
+ELEMENTS_PORT = 8070 # Set this to the host you are on
 
 
-# Docker Settings
 
+STATIC_ROOT = "/var/www/static"
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Application definition
-
-DELT = {
-    "INWARD": "elements",
-    "OUTWARD": ELEMENTS_HOST,
-    "PORT": ELEMENTS_PORT,
-    "TYPE": "graphql"
-}
-
 ARKITEKT_SERVICE = {
     "INWARD": ELEMENTS_INWARD,
     "OUTWARD": ELEMENTS_HOST,
     "PORT": ELEMENTS_PORT,
-    "TYPES": ["SERVICE","DATA", "PROVIDER"],
-    "NAME": "port",
-    "VERSION": "0.1",
-    "DEPENDENCIES": []
+    "TYPES": ["NEGOTIATE","POINT", "PROVIDER"],
+    "NEEDS_NEGOTIATION": False,
 }
+
 
 HERRE = {
-    "PUBLIC_KEY": """
------BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvIrkAA1Tr8pLRR08xXEs
-zuyi/+QGRQ3J7o5j7B+HJLv2MWppd+fgoPQYc9nOkZcA9Jizsvm0bqcXe/8zdxaU
-z7bA+nq3hxLolO4q4SXRxNuBIcNrfLizFrWku5csO9ZfS4EXQGOGAWsVE1WbSRBC
-gAcOR8eq8gB0ai4UByB/xGlwobz1bkuXd3jGVN2oeCo7gbij/JaMrOSkh9wX/WqZ
-lbrEWEFfgURENACn45Hm4ojjLepw/b2j7ZrHMQxvY1THi6lZ6bp9NdfkzyE6JhZb
-SVOzd/dHy+gLBx2UuvmovVEhhxzwRJYtPdqlOWuUOjO24AlpPv7j+BSY7eGSzYU5
-oQIDAQAB
------END PUBLIC KEY-----""",
-    "KEY_TYPE": "RS256",
-    "ISSUER": "arnheim"
+    "PUBLIC_KEY": conf.herre.public_key,
+    "KEY_TYPE": conf.herre.key_type,
+    "ISSUER": conf.herre.issuer
 }
 
-EXTENSIONS = [
-    'balder',
-    'haven'
-]
-
-
+SUPERUSERS = [{
+    "USERNAME": su.username,
+    "EMAIL": su.email,
+    "PASSWORD": su.password
+} for su in conf.security.admins]
 
 
 INSTALLED_APPS = [
@@ -92,13 +72,21 @@ INSTALLED_APPS = [
     'django_filters',
     'taggit',
     'channels',
-    'herre',
+    'lok',
+    'health_check',
+    'health_check.db',
+    'django_probes',
     'guardian',
     'graphene_django',
     "rest_framework",
-    'oauth2_provider'
-] + EXTENSIONS
+    'balder',
+    'haven'
+]
 
+HEALTH_CHECK = {
+    'DISK_USAGE_MAX': 90,  # percent
+    'MEMORY_MIN': 100,    # in MB
+}
 
 
 MIDDLEWARE = [
@@ -108,8 +96,8 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'herre.middlewares.request.jwt.JWTTokenMiddleWare',
-    'herre.middlewares.request.bouncer.BouncedMiddleware', # needs to be after JWT and session 
+    'lok.middlewares.request.jwt.JWTTokenMiddleWare',
+    'lok.middlewares.request.bouncer.BouncedMiddleware', # needs to be after JWT and session 
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -145,11 +133,11 @@ ASGI_APPLICATION = 'port.routing.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_DB"),
-        "USER": os.environ.get("POSTGRES_USER"),
-        "PASSWORD":os.environ.get("POSTGRES_PASSWORD"),
-        "HOST": os.environ.get("POSTGRES_SERVICE_HOST"),
-        "PORT": os.environ.get("POSTGRES_SERVICE_PORT"),
+        "NAME": conf.postgres.db_name,
+        "USER": conf.postgres.user,
+        "PASSWORD":conf.postgres.password,
+        "HOST": conf.postgres.host,
+        "PORT": conf.postgres.port,
     }
 }
 
@@ -158,11 +146,12 @@ CHANNEL_LAYERS = {
         # This example app uses the Redis channel layer implementation channels_redis
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("redis",6379)],
+            "hosts": [(conf.redis.host, conf.redis.port)],
         },
     },
 }
 
+AUTH_USER_MODEL = 'lok.LokUser'
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'guardian.backends.ObjectPermissionBackend')
 
 # Password validation

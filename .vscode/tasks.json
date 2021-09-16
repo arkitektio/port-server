@@ -7,17 +7,22 @@
         {
             "label": "Serve",
             "type": "shell",
-            "command": "python manage.py runserver 0.0.0.0:8060"
+            "command": "python manage.py runserver 0.0.0.0:8050"
         },
         {
-            "label": "Schema",
+            "label": "Update Schema",
             "type": "shell",
             "command": "python manage.py makemigrations && python manage.py migrate"
         },
         {
-            "label": "Haven",
+            "label": "Dump Schema",
             "type": "shell",
-            "command": "python manage.py runhaven"
+            "command": "python manage.py graphql_schema --out schema.graphql"
+        },
+        {
+            "label": "Provide",
+            "type": "shell",
+            "command": "python manage.py provide"
         },
     ]
 }

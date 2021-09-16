@@ -1,0 +1,64 @@
+"""The root Query"""
+type Query {
+  hello: String
+  void: String
+
+  """ Get information on your Docker Template """
+  whale(
+    """The Template ID"""
+    id: ID!
+  ): Whale
+  whales: [Whale]
+}
+
+type Whale {
+  id: ID!
+
+  """The corresponding Template on the Arkitekt Instance"""
+  arkitektId: String!
+
+  """Corresponds to docker hub user"""
+  namespace: String!
+
+  """Corresponds to docker repo name"""
+  repo: String!
+
+  """Corresponds to docker hub user"""
+  tag: String!
+  env: GenericScalar
+}
+
+"""
+The `GenericScalar` scalar type represents a generic
+GraphQL scalar value that could be:
+String, Boolean, Int, Float, List or Object.
+"""
+scalar GenericScalar
+
+"""The root Mutation"""
+type Mutation {
+  """ Create Port Template (and corresponding ArkitektID)"""
+  createWhale(
+    """Environment parameters JSON"""
+    env: GenericScalar = null
+
+    """The Namespace of the Docker (UserName on Dockerhub)"""
+    namespace: String = null
+
+    """The Node id"""
+    node: ID!
+
+    """The Docker Adress"""
+    q: String = null
+
+    """The Repo of the Docker (Repo on Dockerhub)"""
+    repo: String = null
+
+    """The Tag of the Docker (UserName on Dockerhub)"""
+    tag: String = null
+  ): Whale
+  deleteWhale(
+    """The ID of the deletable Whale"""
+    id: ID = null
+  ): Boolean
+}

@@ -3,19 +3,18 @@ version: "3.4"
 services:
   port:
     build: .
-    command: python manage.py runserver 0.0.0.0:8090
+    command: bash run.sh
     ports:
-      - 8060:8060
-    volumes:
-      - .:/worskpace:cached
-      - /var/run/docker.sock:/var/run/docker.sock 
-
-    env_file:
-      - port.env
+      - 8050:8050
+    depends_on: 
+      - flabberl
   flabberl:
     image: postgres:12.6-alpine
-    env_file:
-      - port.env
+    environment:
+      POSTGRES_DB: hello_flabberl
+      POSTGRES_PASSWORD: hello_flabberl
+      POSTGRES_USER: hello_flabberl
+
 
 
 

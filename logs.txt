@@ -1,0 +1,298 @@
+Creating new Ward for Datapoint TYPENAME=None id=1 type='GRAPHQL' name=None inward=None outward='p-tnagerl-lab1' port=8080 url=None models=None
+Creating new Ward for Datapoint TYPENAME=None id=2 type='GRAPHQL' name=None inward=None outward='p-tnagerl-lab1' port=8070 url=None models=None
+Successfully connected [bold]Postman
+Connecting as Entertainer
+ [x] Awaiting Entertaining Calls
+ [x] Awaiting Provision Calls
+Postman: Trying to reconnect Postman
+Lost connection inbetween everything :( [ConnectionClosedError('code = 1006 (connection closed abnormally [internal]), no reason')]
+Reconnecting
+Connection to Arkitekt Failed: Trying again in 2 seconds.
+Entertainer Connection failed did not receive a valid HTTP response
+Retrying in 2 seconds
+Connecting as Entertainer
+ [x] Awaiting Entertaining Calls
+Successfully connected [bold]Postman
+Sueccess fully connected Provider 
+Sueccess fully connected Provider 
+ [x] Awaiting Entertaining Calls
+Sueccess fully connected Provider 
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+/workspace/haven/balder.py changed, reloading.
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+/workspace/haven/balder.py changed, reloading.
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+/workspace/haven/balder.py changed, reloading.
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+/workspace/haven/balder.py changed, reloading.
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+/workspace/haven/balder.py changed, reloading.
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+/workspace/haven/balder.py changed, reloading.
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+/workspace/haven/balder.py changed, reloading.
+/workspace/haven/balder.py changed, reloading.
+/workspace/haven/balder.py changed, reloading.
+/workspace/haven/balder.py changed, reloading.
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+/workspace/haven/balder.py changed, reloading.
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Creating new Ward for Datapoint TYPENAME=None distinct='Elements' needsNegotiation='True' type=<DataPointType.GRAPHQL: 'GRAPHQL'> host=None port=8080 secure=None
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Creating new Ward for Datapoint TYPENAME=None distinct='Elements' needsNegotiation='True' type=<DataPointType.GRAPHQL: 'GRAPHQL'> host=None port=8080 secure=None
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Creating new Ward for Datapoint TYPENAME=None distinct='Elements' needsNegotiation='True' type=<DataPointType.GRAPHQL: 'GRAPHQL'> host=None port=8080 secure=None
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Creating new Ward for Datapoint TYPENAME=None distinct='Elements' needsNegotiation='True' type=<DataPointType.GRAPHQL: 'GRAPHQL'> host=None port=8080 secure=None
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Creating new Ward for Datapoint TYPENAME=None distinct='Elements' needsNegotiation='True' type=<DataPointType.GRAPHQL: 'GRAPHQL'> host=None port=8080 secure=None
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Creating new Ward for Datapoint TYPENAME=None distinct='Elements' needsNegotiation='True' type=<DataPointType.GRAPHQL: 'GRAPHQL'> host=None port=8080 secure=None
+Sueccess fully connected Provider 
+Sueccess fully connected Provider 
+Creating new Ward for Datapoint TYPENAME=None distinct='Elements' needsNegotiation='True' type=<DataPointType.GRAPHQL: 'GRAPHQL'> host=None port=8080 secure=None
+Creating new Ward for Datapoint TYPENAME=None distinct='Elements' needsNegotiation='True' type=<DataPointType.GRAPHQL: 'GRAPHQL'> host=None port=8080 secure=None
+Sueccess fully connected Provider 
+Sueccess fully connected Provider 
+ [x] Awaiting Entertaining Calls
+ [x] Awaiting Entertaining Calls
+Sueccess fully connected Provider 
+Sueccess fully connected Provider 
+Sueccess fully connected Provider 
+Sueccess fully connected Provider 
+Postman: Trying to reconnect Postman
+Postman: Trying to reconnect Postman
+Lost connection inbetween everything :( [ConnectionClosedError('code = 1006 (connection closed abnormally [internal]), no reason')]
+Lost connection inbetween everything :( [ConnectionClosedError('code = 1006 (connection closed abnormally [internal]), no reason')]
+Reconnecting
+Reconnecting
+Postman: Trying to reconnect Postman
+Postman: Trying to reconnect Postman
+Provider: Lost connection inbetween everything :( [ConnectionClosedError('code = 1006 (connection closed abnormally [internal]), no reason')]
+Provider: Lost connection inbetween everything :( [ConnectionClosedError('code = 1006 (connection closed abnormally [internal]), no reason')]
+Provider: Reconnecting
+Provider: Reconnecting
+Sueccess fully connected Provider 
+Sueccess fully connected Provider 
+Sueccess fully connected Provider 
+Sueccess fully connected Provider 
+Sueccess fully connected Provider 
+Sueccess fully connected Provider 
+Sueccess fully connected Provider 
+Sueccess fully connected Provider 
+ [x] Awaiting Entertaining Calls
+ [x] Awaiting Entertaining Calls
+Creating new Ward for Datapoint TYPENAME=None distinct='Elements' needsNegotiation='True' type=<DataPointType.GRAPHQL: 'GRAPHQL'> host=None port=8080 secure=None
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Creating new Ward for Datapoint TYPENAME=None distinct='Elements' needsNegotiation='True' type=<DataPointType.GRAPHQL: 'GRAPHQL'> host=None port=8080 secure=None
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Creating new Ward for Datapoint TYPENAME=None distinct='Elements' needsNegotiation='True' type=<DataPointType.GRAPHQL: 'GRAPHQL'> host=None port=8080 secure=None
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+/workspace/port/settings.py changed, reloading.
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation

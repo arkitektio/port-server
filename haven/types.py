@@ -4,7 +4,7 @@ from haven import models
 
 
 
-class PortTemplate(BalderObject):
+class Whale(BalderObject):
 
     class Meta:
         model = models.PortTemplate
