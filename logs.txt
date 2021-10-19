@@ -324,3 +324,15 @@ Registering Whale as Query
 Registering Whales as Query
 Registering CreateWhale as Mutation
 Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation
+Registering Whale as Query
+Registering Whales as Query
+Registering CreateWhale as Mutation
+Registering DeleteWhale as Mutation

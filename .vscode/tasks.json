@@ -24,5 +24,10 @@
             "type": "shell",
             "command": "python manage.py provide"
         },
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "docker build -t jhnnsrs/arkitekt:prod ."
+        },
     ]
 }

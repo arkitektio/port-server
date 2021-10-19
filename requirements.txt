@@ -20,13 +20,12 @@ python-slugify
 graphene-django
 unflatten
 
-arkitekt
-
+arkitekt>=0.1.13
 # JWT
-lok>=0.1.7
+lok>=0.1.10
 
 # GraphQL abstaction
-balder>=0.1.6
+balder[subscription]>=0.1.6
 
 
 # Testing and Linting
