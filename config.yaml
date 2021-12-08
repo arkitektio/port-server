@@ -1,9 +1,9 @@
 postgres:
-  host: flabberl
+  host: daten
   port: 5432
-  user: hello_flabberl
-  password: hello_flabberl
-  db_name: hello_flabberl
+  user: hello_django
+  password: hello_django
+  db_name: portdb
 
 redis:
   host: redis

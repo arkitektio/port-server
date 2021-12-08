@@ -2,23 +2,38 @@ from django.db import models
 
 # Create your models here.
 
-class PortTemplate(models.Model):
-    arkitekt_id = models.CharField(max_length=1000, help_text="The corresponding Template on the Arkitekt Instance")
-    namespace = models.CharField(max_length=100, help_text="Corresponds to docker hub user")
-    repo = models.CharField(max_length=100, help_text="Corresponds to docker repo name")
-    tag = models.CharField(max_length=100, help_text="Corresponds to docker hub user")
-    env = models.JSONField(help_text="Environment parameters for the Port", null=True)
+
+class Whale(models.Model):
+    template = models.CharField(
+        max_length=1000,
+        help_text="The corresponding Template on the Arkitekt Instance",
+        unique=True,
+    )
+    image = models.CharField(max_length=4000)
+    config = models.JSONField(
+        help_text="Environment parameters for the Port", null=True
+    )
+
+    created_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
-        return f"Docker container {self.namespace}/{self.repo}:{self.tag} on Arkitekt {self.arkitekt_id}"
+        return f"Docker container {self.namespace}/{self.repo}:{self.tag} on Arkitekt {self.template}"
 
 
-class PortPod(models.Model):
-    arkitekt_id = models.CharField(max_length=1000, help_text="The Corresponding Pod on the Arkitekt Instance")
-    template = models.ForeignKey(PortTemplate, help_text="The corresponding Template", on_delete=models.CASCADE)
-    name = models.CharField(max_length=100, help_text="The containers clear-text name")
+class GithubRepo(models.Model):
+    repo = models.CharField(max_length=4000)
+    user = models.CharField(max_length=4000)
+    branch = models.CharField(max_length=4000)
+    definition = models.JSONField(
+        default=dict, help_text="The Node this Repo wants to define"
+    )
+    backend = models.BooleanField(
+        default=False, help_text="Does this Task want to be a BackendApp?"
+    )
+    scopes = models.JSONField(default=list)
+    image = models.CharField(max_length=400, default="jhnnsrs/ome:latest")
+    whale = models.OneToOneField(
+        Whale, null=True, blank=True, on_delete=models.SET_NULL
+    )
 
-
-    def __str__(self) -> str:
-        return f"Running Docker container for {self.template}"
-
+    created_at = models.DateTimeField(auto_now=True)

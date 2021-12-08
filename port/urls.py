@@ -21,14 +21,15 @@ from graphene_django.views import GraphQLView
 from django.views.decorators.csrf import csrf_exempt
 from django.conf.urls import include, url
 
+
 def index(request):
-        # Render that in the index template
+    # Render that in the index template
     return render(request, "index-oslo.html")
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', index, name='index'),
-    url(r'^graphql$', BalderView),
-    url(r'^ht/', include('health_check.urls')),
+    path("admin/", admin.site.urls),
+    path("", index, name="index"),
+    path("graphql", BalderView, name="graphql"),
+    url(r"^ht/", include("health_check.urls")),
 ]

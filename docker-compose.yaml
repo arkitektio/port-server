@@ -8,12 +8,6 @@ services:
       - 8050:8050
     depends_on: 
       - flabberl
-  flabberl:
-    image: postgres:12.6-alpine
-    environment:
-      POSTGRES_DB: hello_flabberl
-      POSTGRES_PASSWORD: hello_flabberl
-      POSTGRES_USER: hello_flabberl
 
 
 
