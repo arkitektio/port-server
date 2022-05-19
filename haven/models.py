@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 
 # Create your models here.
 
@@ -23,17 +24,7 @@ class Whale(models.Model):
 class GithubRepo(models.Model):
     repo = models.CharField(max_length=4000)
     user = models.CharField(max_length=4000)
+    creator = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True)
     branch = models.CharField(max_length=4000)
-    definition = models.JSONField(
-        default=dict, help_text="The Node this Repo wants to define"
-    )
-    backend = models.BooleanField(
-        default=False, help_text="Does this Task want to be a BackendApp?"
-    )
-    scopes = models.JSONField(default=list)
     image = models.CharField(max_length=400, default="jhnnsrs/ome:latest")
-    whale = models.OneToOneField(
-        Whale, null=True, blank=True, on_delete=models.SET_NULL
-    )
-
     created_at = models.DateTimeField(auto_now=True)

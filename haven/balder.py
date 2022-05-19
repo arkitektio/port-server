@@ -11,7 +11,7 @@ from arkitekt.schema import Node, Template
 import requests
 import yaml
 from django.conf import settings
-
+from .filters import GithubRepoFilter
 
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
@@ -68,6 +68,7 @@ class CreateWhaleReturn(graphene.ObjectType):
 
 class GithubRepos(BalderQuery):
     class Meta:
+        filter = GithubRepoFilter
         type = types.GithubRepo
         list = True
 
