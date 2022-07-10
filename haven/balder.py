@@ -92,20 +92,10 @@ class CreateGithubRepo(BalderMutation):
         assert repo is not None, "Provide Repo"
         assert branch is not None, "Provide Branch"
 
-        result = requests.get(
-            f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/.port/definition.yaml"
-        )
-        result = requests.get(
-            f"https://raw.githubusercontent.com/jhnnsrs/om/master/.port/definition.yaml"
-        )
-
-        definition = yaml.load(result.content, Loader=Loader)
-
         model = models.GithubRepo.objects.create(
             user=user,
             repo=repo,
             scopes=["introspection"],
-            definition=definition,
             backend=False,
             image="jhnnsrs/ome:latest",
         )

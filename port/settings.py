@@ -22,7 +22,7 @@ conf = OmegaConf.load(os.path.join(BASE_DIR, "config.yaml"))
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = conf.security.secret_key
+SECRET_KEY = conf.server.secret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = conf.server.debug or False
@@ -38,25 +38,19 @@ ELEMENTS_PORT = 8070  # Set this to the host you are on
 STATIC_ROOT = "/var/www/static"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Application definition
-ARKITEKT_SERVICE = {
-    "INWARD": ELEMENTS_INWARD,
-    "OUTWARD": ELEMENTS_HOST,
-    "PORT": ELEMENTS_PORT,
-    "TYPES": ["NEGOTIATE", "POINT", "PROVIDER"],
-    "NEEDS_NEGOTIATION": False,
-}
-
 
 LOK = {
-    "PUBLIC_KEY": conf.herre.public_key,
-    "KEY_TYPE": conf.herre.key_type,
-    "ISSUER": conf.herre.issuer,
+    "PUBLIC_KEY": conf.lok.public_key,
+    "KEY_TYPE": conf.lok.key_type,
+    "ISSUER": conf.lok.issuer,
 }
 
 SUPERUSERS = [
-    {"USERNAME": su.username, "EMAIL": su.email, "PASSWORD": su.password}
-    for su in conf.security.admins
+    {
+        "USERNAME": conf.server.admin.username,
+        "EMAIL": conf.server.admin.email,
+        "PASSWORD": conf.server.admin.password,
+    }
 ]
 
 
