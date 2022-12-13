@@ -1,12 +1,115 @@
 from balder.types import BalderObject
 from haven import models
+import graphene
+from graphene.types.generic import GenericScalar
+from haven.client import api
+from haven.enums import DockerRuntime, ContainerStatus
 
 
 class GithubRepo(BalderObject):
+    version = graphene.String(required=True)
+    identifier = graphene.String(required=True)
+    scopes = graphene.List(graphene.String, required=True)
+    
     class Meta:
         model = models.GithubRepo
 
+class RepoScan(BalderObject):
+
+
+    class Meta:
+        model = models.RepoScan
 
 class Whale(BalderObject):
     class Meta:
         model = models.Whale
+
+
+class Network(graphene.ObjectType):
+    name = graphene.String()
+    id = graphene.String(required=True)
+    driver = graphene.String()
+    scope = graphene.String()
+    ipam = GenericScalar()
+    internal = graphene.Boolean()
+    containers = graphene.List(lambda: Container)
+    options = GenericScalar()
+    labels = GenericScalar()
+
+
+class Image(graphene.ObjectType):
+    id = graphene.String(required=True)
+    attrs = GenericScalar()
+    labels = GenericScalar()
+    tags = graphene.List(graphene.String)
+
+
+class Container(graphene.ObjectType):
+    id = graphene.ID(required=True)
+    name = graphene.String()
+    image = graphene.Field(Image)
+    labels = GenericScalar()
+    attrs = GenericScalar()
+    whale = graphene.Field(Whale)
+    status = graphene.Field(ContainerStatus)
+    logs = graphene.String(
+        stdout=graphene.Boolean(required=False),
+        stderr=graphene.Boolean(required=False),
+        tail=graphene.Int(required=False),
+        since=graphene.String(required=False),
+        timestamps=graphene.Boolean(required=False),
+        follow=graphene.Boolean(required=False),
+        until=graphene.String(required=False),
+    )
+    network = graphene.Field(Network)
+    runtime = graphene.Field(DockerRuntime)
+
+    def resolve_id(self, info):
+        return self.id
+
+    def resolve_labels(self, info):
+        return self.labels
+
+    def resolve_whale(self, info):
+
+        whale_label = self.labels.get("whale")
+        if whale_label:
+            try:
+                return models.Whale.objects.get(id=whale_label)
+            except models.Whale.DoesNotExist:
+                return None
+
+    def resolve_network(self, info):
+        id = list(self.attrs["NetworkSettings"]["Networks"].values())[0]["NetworkID"]
+        if id:
+            return api.networks.get(id)
+        else:
+            return None
+
+    def resolve_runtime(self, info):
+        return self.attrs["HostConfig"]["Runtime"]
+
+    def resolve_attrs(self, info):
+        return self.attrs
+
+    def resolve_logs(
+        self,
+        info,
+        stdout=True,
+        stderr=True,
+        tail=100,
+        since=None,
+        timestamps=False,
+        follow=False,
+        until=None,
+    ):
+        assert info.context.user.is_authenticated, "You must be logged in to see this"
+        return self.logs(
+            stdout=stdout,
+            stderr=stderr,
+            tail=tail,
+            since=since,
+            timestamps=timestamps,
+            follow=follow,
+            until=until,
+        ).decode("utf-8")

@@ -4,10 +4,10 @@ services:
   port:
     build: .
     command: bash run.sh
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
-      - 8050:8050
-    depends_on: 
-      - flabberl
+      - 8055:8055
 
 
 

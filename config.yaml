@@ -1,37 +1,25 @@
+lok:
+  issuer: herre
+  key_type: RS256
+  public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3zKYtsPl/wsTtX4XQRtBnaTYYXGzqF8uhAourwqvWYPMnQlVbSJGZquVkmljFnRKg1FjOmoEsjIvb9tBtyZuW+oWL06aqArLm2kcCbPofYN8mJnoQdtAxssnJz02gkIYfbFUy/ImBWWq3xQjbleNtN8qGPGaYbo3BIzZv1zwZIddta0MJhBGlGhUO1LsookU6k0OaZcFg1xjUFZgkgTm7DNWUkuEBJwtGvI6W6IF0e2KAXkgp/c77p+5/ZqXwa694+Uoz36Dqsffjho2FtfLwFUfsFvIkB40Pwzd/2Uie9b5W8ocXou3S71+6jgeQZqsB+STnBX/X4Uh7d5uiPSoH
+port: 8050
 postgres:
+  db_name: port_db
   host: daten
+  password: 6398045f7711b517ac0aa3c7e6b77a63
   port: 5432
-  user: hello_django
-  password: hello_django
-  db_name: portdb
-
+  user: arkitekt
 redis:
   host: redis
   port: 6379
-
 server:
-  debug: True
+  admin:
+    email: johannes.roos@u-bordeaux.fr
+    password: roos
+    username: admin
+  debug: true
   hosts:
-    - "*"
-
-security:
-  admins:
-    - username: demo
-      password: demodemo 
-      email: demo@demo.com
-  secret_key: gagamat5s+_5iyi=*z^zn67xyw&4pv$c0_j^m!aqz6c-q2z8-vht0%gag
-
-herre:
-  public_key: |
-    -----BEGIN PUBLIC KEY-----
-    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvIrkAA1Tr8pLRR08xXEs
-    zuyi/+QGRQ3J7o5j7B+HJLv2MWppd+fgoPQYc9nOkZcA9Jizsvm0bqcXe/8zdxaU
-    z7bA+nq3hxLolO4q4SXRxNuBIcNrfLizFrWku5csO9ZfS4EXQGOGAWsVE1WbSRBC
-    gAcOR8eq8gB0ai4UByB/xGlwobz1bkuXd3jGVN2oeCo7gbij/JaMrOSkh9wX/WqZ
-    lbrEWEFfgURENACn45Hm4ojjLepw/b2j7ZrHMQxvY1THi6lZ6bp9NdfkzyE6JhZb
-    SVOzd/dHy+gLBx2UuvmovVEhhxzwRJYtPdqlOWuUOjO24AlpPv7j+BSY7eGSzYU5
-    oQIDAQAB
-    -----END PUBLIC KEY-----
-  key_type: RS256
-  issuer: herre
-
+  - '*'
+  secret_key: )bzdzfc2rru2^$_8t%*a14-5rncto7*d(0dl&1*lywa@ync#zy
+dock:
+  default_network: dev

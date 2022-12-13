@@ -21,6 +21,9 @@ conf = OmegaConf.load(os.path.join(BASE_DIR, "config.yaml"))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = conf.server.secret_key
 
@@ -28,11 +31,7 @@ SECRET_KEY = conf.server.secret_key
 DEBUG = conf.server.debug or False
 
 ALLOWED_HOSTS = conf.server.hosts
-
-
-ELEMENTS_HOST = "p-tnagerl-lab1"
-ELEMENTS_INWARD = "fluss"  # Set this to the host you are on
-ELEMENTS_PORT = 8070  # Set this to the host you are on
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 STATIC_ROOT = "/var/www/static"
@@ -70,7 +69,6 @@ INSTALLED_APPS = [
     "django_probes",
     "guardian",
     "graphene_django",
-    "rest_framework",
     "balder",
     "haven",
 ]
@@ -149,6 +147,13 @@ AUTHENTICATION_BACKENDS = (
     "guardian.backends.ObjectPermissionBackend",
 )
 
+
+DOCK = {
+    "HOST": "port",
+    "DEFAULT_NETWORK": conf.dock.default_network,
+}
+
+
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -197,22 +202,15 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "console": {
-            "()": "colorlog.ColoredFormatter",  # colored output
             # exact format is not important, this is the minimum information
-            "format": "%(log_color)s[%(levelname)s]  %(name)s %(asctime)s :: %(message)s",
-            "log_colors": {
-                "DEBUG": "bold_black",
-                "INFO": "green",
-                "WARNING": "yellow",
-                "ERROR": "red",
-                "CRITICAL": "bold_red",
-            },
+            "format": "%(message)s",
         },
     },
     "handlers": {
         "console": {
-            "class": "colorlog.StreamHandler",
+            "class": "rich.logging.RichHandler",
             "formatter": "console",
+            "rich_tracebacks": True,
         },
     },
     "loggers": {

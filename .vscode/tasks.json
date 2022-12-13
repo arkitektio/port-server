@@ -27,7 +27,7 @@
         {
             "label": "Build",
             "type": "shell",
-            "command": "docker build -t jhnnsrs/arkitekt:prod ."
+            "command": "docker build -t jhnnsrs/port:prod ."
         },
     ]
 }
