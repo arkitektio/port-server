@@ -25,12 +25,12 @@ conf = OmegaConf.load(os.path.join(BASE_DIR, "config.yaml"))
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = conf.server.secret_key
+SECRET_KEY = conf.django.secret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = conf.server.debug or False
+DEBUG = conf.django.debug or False
 
-ALLOWED_HOSTS = conf.server.hosts
+ALLOWED_HOSTS = conf.django.hosts
 CORS_ALLOW_ALL_ORIGINS = True
 
 
@@ -46,9 +46,9 @@ LOK = {
 
 SUPERUSERS = [
     {
-        "USERNAME": conf.server.admin.username,
-        "EMAIL": conf.server.admin.email,
-        "PASSWORD": conf.server.admin.password,
+        "USERNAME": conf.django.admin.username,
+        "EMAIL": conf.django.admin.email,
+        "PASSWORD": conf.django.admin.password,
     }
 ]
 
@@ -122,12 +122,12 @@ ASGI_APPLICATION = "port.routing.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": conf.postgres.db_name,
-        "USER": conf.postgres.user,
-        "PASSWORD": conf.postgres.password,
-        "HOST": conf.postgres.host,
-        "PORT": conf.postgres.port,
+        "ENGINE": conf.db.engine,
+        "NAME": conf.db.db_name,
+        "USER": conf.db.username,
+        "PASSWORD": conf.db.password,
+        "HOST": conf.db.host,
+        "PORT": conf.db.port,
     }
 }
 
@@ -150,7 +150,7 @@ AUTHENTICATION_BACKENDS = (
 
 DOCK = {
     "HOST": "port",
-    "DEFAULT_NETWORK": conf.dock.default_network,
+    "DEFAULT_NETWORK": conf.virtualizer.network,
 }
 
 

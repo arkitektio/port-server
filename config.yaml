@@ -19,7 +19,7 @@ server:
     username: admin
   debug: true
   hosts:
-  - '*'
-  secret_key: )bzdzfc2rru2^$_8t%*a14-5rncto7*d(0dl&1*lywa@ync#zy
+    - "*"
+  secret_key: )bzdzfc2rru2^$_8t%*a14-5rnscto7*d(0dl&1*lywa@ync#zy
 dock:
   default_network: dev

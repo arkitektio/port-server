@@ -7,6 +7,7 @@ from haven.enums import WhaleRuntime
 
 
 class Whale(models.Model):
+    repo = models.ForeignKey("RepoScan", on_delete=models.CASCADE, null=True, blank=True, related_name="whales")
     image = models.CharField(max_length=4000)
     config = models.JSONField(
         help_text="Environment parameters for the Port", null=True
@@ -21,6 +22,7 @@ class Whale(models.Model):
         choices=WhaleRuntime.choices,
         default=WhaleRuntime.RUNC.value,
     )
+    token = models.CharField(max_length=10000, null=True)
     version = models.CharField(max_length=1000)
     identifier = models.CharField(max_length=1000)
 
@@ -42,12 +44,21 @@ class GithubRepo(models.Model):
     def pyproject_url(self):
         return f"https://raw.githubusercontent.com/{self.user}/{self.repo}/{self.branch}/pyproject.toml"
 
+    @property
+    def manifest_url(self):
+        return f"https://raw.githubusercontent.com/{self.user}/{self.repo}/{self.branch}/.arkitekt/manifest.yaml"    
+
+    @property
+    def deployments(self):
+        return f"https://raw.githubusercontent.com/{self.user}/{self.repo}/{self.branch}/.arkitekt/deployments.yaml"    
+
 
 class RepoScan(models.Model):
     name = models.CharField(max_length=4000)
-    repo = models.ForeignKey(GithubRepo, on_delete=models.CASCADE)
+    repo = models.ForeignKey(GithubRepo, on_delete=models.CASCADE, related_name="scans")
     created_at = models.DateTimeField(auto_now=True)
     image = models.CharField(max_length=400, default="jhnnsrs/ome:latest")
+    runtime = models.CharField(max_length=400, default="standard")
     version = models.CharField(max_length=400, default="latests")
     identifier = models.CharField(max_length=4000)
     scopes = models.JSONField()

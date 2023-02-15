@@ -7,7 +7,7 @@ from django.conf import settings
 import requests
 import toml
 from lok import bounced
-
+import yaml
 
 class ScanRepoMutation(BalderMutation):
     class Arguments:
@@ -17,22 +17,24 @@ class ScanRepoMutation(BalderMutation):
         repo = models.GithubRepo.objects.get(id=id)
 
         # download the pryproject toml file
-        x = requests.get(repo.pyproject_url)
+        x = requests.get(repo.deployments)
         # parse the file
-        z = toml.loads(x.text)
+        z = yaml.safe_load(x.text)
+        print(z)
 
-        settings = z["tool"]["arkitekt"]
-
-        s , _ = models.RepoScan.objects.update_or_create(
-            version=settings["version"],
-            identifier=settings["identifier"],
-            defaults=dict(
-            repo=repo,
-            name=settings["name"],
-            image=settings["image"],
-            scopes=settings["scopes"],
+        for deployment in z["deployments"]: 
+            s , _ = models.RepoScan.objects.update_or_create(
+                version=deployment["version"],
+                identifier=deployment["identifier"],
+                defaults=dict(
+                repo=repo,
+                name=deployment["identifier"],
+                image=deployment["deployed"]["docker"],
+                scopes=deployment["scopes"],
+                runtime=deployment["deployed"]["runtime"],
+                )
             )
-        )
+
         return s
 
 

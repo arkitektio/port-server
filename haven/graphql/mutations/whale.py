@@ -22,6 +22,7 @@ class RunWhaleMutation(BalderMutation):
         except docker.errors.NotFound:
             container = api.containers.run(
                 whale.image,
+                command='arkitekt run port',
                 detach=True,
                 name=f"{whale.id}-{instance}",
                 labels={
@@ -30,11 +31,10 @@ class RunWhaleMutation(BalderMutation):
                     "host": f"{settings.DOCK['HOST']}",
                 },
                 restart_policy={"Name": "on-failure", "MaximumRetryCount": 5},
-                runtime=runtime or whale.runtime,
+                runtime="nvidia",
                 environment={
-                    "FAKTS_ENDPOINT_URL": whale.url,
-                    "FAKTS_CLIENT_ID": whale.client_id,
-                    "FAKTS_CLIENT_SECRET": whale.client_secret,
+                    "FAKTS_URL": whale.url,
+                    "FAKTS_TOKEN": whale.token,
                 },
                 network=network
                 or api.networks.list(names=[settings.DOCK["DEFAULT_NETWORK"]])[0].id,
@@ -56,14 +56,15 @@ class CreateWhaleMutation(BalderMutation):
         identifier = graphene.String(required=True)
         image = graphene.String(required=True)
         client_id = graphene.String(required=True)
+        token = graphene.String(required=True)
         client_secret = graphene.String(required=True)
         scopes = graphene.List(graphene.String, required=True)
         fakt_endpoint = graphene.String(required=True)
         runtime = graphene.Argument(enums.DockerRuntime, required=False)
 
     @bounced()
-    def mutate(self, info, version, identifier, image, client_id, client_secret, scopes, fakt_endpoint, runtime=None):
-        whale, x = models.Whale.objects.update_or_create(client_id=client_id, defaults= dict(version=version, identifier=identifier, image=image, runtime=runtime, client_secret=client_secret, scopes=scopes, url=fakt_endpoint, creator=info.context.user))
+    def mutate(self, info, version, identifier, image, client_id, client_secret, scopes, fakt_endpoint, runtime=None, token=None):
+        whale, x = models.Whale.objects.update_or_create(client_id=client_id, defaults= dict(version=version, identifier=identifier, image=image, runtime=runtime, client_secret=client_secret, scopes=scopes, url=fakt_endpoint, creator=info.context.user, token=token))
         return whale
 
     class Meta:
