@@ -1,11 +1,11 @@
 from channels.auth import AuthMiddlewareStack
-from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.routing import ProtocolTypeRouter, URLRouter, ChannelNameRouter
 from django.conf.urls import url
 from django.core.asgi import get_asgi_application
 from balder.consumers import MyGraphqlWsConsumer
 from lok.middlewares.scope.bouncer import BouncerChannelMiddleware
 from lok.middlewares.scope.jwt import JWTChannelMiddleware
-
+from haven.consumers.pull_consumer import DockerApiConsumer
 # The channel routing defines what connections get handled by what consumers,
 # selecting on either the connection type (ProtocolTypeRouter) or properties
 # of the connection's scope (like URLRouter, which looks at scope["path"])
@@ -28,4 +28,7 @@ application = ProtocolTypeRouter({
         url('graphql/', MyGraphqlWsConsumer.as_asgi()),
         url('graphql', MyGraphqlWsConsumer.as_asgi()),
     ])),
+    "channel": ChannelNameRouter({
+            "docker": DockerApiConsumer.as_asgi(),
+        }),
 })

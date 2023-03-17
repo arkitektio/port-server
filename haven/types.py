@@ -4,12 +4,16 @@ import graphene
 from graphene.types.generic import GenericScalar
 from haven.client import api
 from haven.enums import DockerRuntime, ContainerStatus
-
+import datetime
 
 class GithubRepo(BalderObject):
     version = graphene.String(required=True)
     identifier = graphene.String(required=True)
     scopes = graphene.List(graphene.String, required=True)
+    readme = graphene.String()
+
+    def resolve_readme(self, info):
+        return self.readme_url
     
     class Meta:
         model = models.GithubRepo
@@ -21,6 +25,37 @@ class RepoScan(BalderObject):
         model = models.RepoScan
 
 class Whale(BalderObject):
+    pulled = graphene.Boolean()
+    latest_pull = graphene.DateTime()
+    containers = graphene.List(lambda: Container)
+
+    def resolve_containers(self, info):
+        return api.containers.list(filters={"label": [f"whale={self.id}"]})
+
+
+    def resolve_pulled(self, info):
+        try:
+            api.images.get(self.image)
+            return True
+        except:
+            return False
+        
+    def resolve_latest_pull(self, info):
+        try:
+            l = api.images.get(self.image).attrs["Created"]
+            l = l.replace("'", "")
+            l = l[:24]
+            print(l)
+            
+        except:
+            return None
+        format = '%Y-%m-%dT%H:%M:%S.%f'
+        return datetime.datetime.strptime(l, format)
+        
+
+
+
+
     class Meta:
         model = models.Whale
 

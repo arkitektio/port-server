@@ -43,6 +43,10 @@ class GithubRepo(models.Model):
     @property
     def pyproject_url(self):
         return f"https://raw.githubusercontent.com/{self.user}/{self.repo}/{self.branch}/pyproject.toml"
+    
+    @property
+    def readme_url(self):
+        return f"https://raw.githubusercontent.com/{self.user}/{self.repo}/{self.branch}/README.md"
 
     @property
     def manifest_url(self):

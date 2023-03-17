@@ -4,6 +4,11 @@ from haven import models, types, enums
 from haven.client import api
 import docker
 from django.conf import settings
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
+channel_layer = get_channel_layer()
+
 
 
 class StopContainerMutation(BalderMutation):
@@ -18,7 +23,10 @@ class StopContainerMutation(BalderMutation):
 
         container = api.containers.get(id)
         if container:
-            container.stop()
+            async_to_sync(channel_layer.send)("docker", {
+            "type": "stop.container",
+            "container": id,
+            })
             return container
 
         else:
@@ -37,7 +45,10 @@ class RestartContainerMutation(BalderMutation):
 
         container = api.containers.get(id)
         if container:
-            container.restart()
+            async_to_sync(channel_layer.send)("docker", {
+            "type": "restart.container",
+            "container": id,
+            })
             return container
 
         else:
@@ -56,7 +67,10 @@ class RemoveContainerMutation(BalderMutation):
 
         container = api.containers.get(id)
         if container:
-            container.remove()
+            async_to_sync(channel_layer.send)("docker", {
+            "type": "remove.container",
+            "container": id,
+            })
             return container
 
         else:

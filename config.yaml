@@ -1,25 +1,30 @@
-lok:
-  issuer: herre
-  key_type: RS256
-  public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3zKYtsPl/wsTtX4XQRtBnaTYYXGzqF8uhAourwqvWYPMnQlVbSJGZquVkmljFnRKg1FjOmoEsjIvb9tBtyZuW+oWL06aqArLm2kcCbPofYN8mJnoQdtAxssnJz02gkIYfbFUy/ImBWWq3xQjbleNtN8qGPGaYbo3BIzZv1zwZIddta0MJhBGlGhUO1LsookU6k0OaZcFg1xjUFZgkgTm7DNWUkuEBJwtGvI6W6IF0e2KAXkgp/c77p+5/ZqXwa694+Uoz36Dqsffjho2FtfLwFUfsFvIkB40Pwzd/2Uie9b5W8ocXou3S71+6jgeQZqsB+STnBX/X4Uh7d5uiPSoH
-port: 8050
-postgres:
+db:
   db_name: port_db
-  host: daten
-  password: 6398045f7711b517ac0aa3c7e6b77a63
+  engine: django.db.backends.postgresql
+  host: db
+  password: c00f399c94e5d1d0e2d53226a4f384cd
   port: 5432
-  user: arkitekt
+  username: zippyolivebutterfly
+django:
+  admin:
+    email: admin@admin.com
+    password: admin
+    username: admin
+  debug: false
+  hosts:
+    - "*"
+  secret_key: oljw68pctwwl#y)v1a4k=jbrefv0x+%us@!5aq8z6-#5lys=o!
+lok:
+  issuer: lok
+  key_type: RS256
+  public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGFj0zB7j6KrTRFEP+a2Z7toLEwJ0ROF3qSkq6vo2aK5TGRv+D3V/6VhvM2NgtUIO1iqwvf4XETamhHt2xlVzJyoyMAnAGkwkMyQJpI6wG5g7NtrRc1kkeefWbLBVW+aEI++3ec3eD9PUhnjXbQXJwju8l2ldKg2skw2fZWrjfWo0S0CuvB05nXJ8BmmAo65BBv29gGVywzZEApv/Zu16l6ftCZSEKi/zMbK6YxCekl/h3sfK7uGj6uaab7XSqqANHDZDTSotD5ws8UdMb3IP4/qoJiJm0Lsw5XpmFTt9M+ekiv/9HsWjXtzOd0BpqxynlvF1fWDr0HVnrUCh1XMzn
 redis:
   host: redis
   port: 6379
-server:
-  admin:
-    email: johannes.roos@u-bordeaux.fr
-    password: roos
-    username: admin
-  debug: true
-  hosts:
-    - "*"
-  secret_key: )bzdzfc2rru2^$_8t%*a14-5rnscto7*d(0dl&1*lywa@ync#zy
-dock:
-  default_network: dev
+virtualizer:
+  allowed_runtimes:
+    - nvidia
+    - runc
+    - wasm
+  engine: docker
+  network: dev

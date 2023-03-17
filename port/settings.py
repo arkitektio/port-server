@@ -37,6 +37,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 STATIC_ROOT = "/var/www/static"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+FAKTS_URL = "http://lok:8000"
 
 LOK = {
     "PUBLIC_KEY": conf.lok.public_key,
@@ -137,6 +138,7 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [(conf.redis.host, conf.redis.port)],
+            "prefix": "port"
         },
     },
 }

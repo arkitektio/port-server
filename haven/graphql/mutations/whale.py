@@ -5,6 +5,11 @@ from haven.client import api
 import docker
 from django.conf import settings
 from lok import bounced
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
+channel_layer = get_channel_layer()
+
 
 class RunWhaleMutation(BalderMutation):
     class Arguments:
@@ -31,7 +36,7 @@ class RunWhaleMutation(BalderMutation):
                     "host": f"{settings.DOCK['HOST']}",
                 },
                 restart_policy={"Name": "on-failure", "MaximumRetryCount": 5},
-                runtime="nvidia",
+                runtime=runtime or whale.runtime or "runc",
                 environment={
                     "FAKTS_URL": whale.url,
                     "FAKTS_TOKEN": whale.token,
@@ -59,11 +64,16 @@ class CreateWhaleMutation(BalderMutation):
         token = graphene.String(required=True)
         client_secret = graphene.String(required=True)
         scopes = graphene.List(graphene.String, required=True)
-        fakt_endpoint = graphene.String(required=True)
+        fakt_endpoint = graphene.String(required=False)
         runtime = graphene.Argument(enums.DockerRuntime, required=False)
 
     @bounced()
-    def mutate(self, info, version, identifier, image, client_id, client_secret, scopes, fakt_endpoint, runtime=None, token=None):
+    def mutate(self, info, version, identifier, image, client_id, client_secret, scopes, fakt_endpoint= None, runtime=None, token=None):
+
+        if not fakt_endpoint:
+            fakt_endpoint = settings.FAKTS_URL
+
+
         whale, x = models.Whale.objects.update_or_create(client_id=client_id, defaults= dict(version=version, identifier=identifier, image=image, runtime=runtime, client_secret=client_secret, scopes=scopes, url=fakt_endpoint, creator=info.context.user, token=token))
         return whale
 
@@ -88,3 +98,23 @@ class DeleteWhale(BalderMutation):
 
     class Meta:
         type = DeleteWhaleReturn
+
+
+class PullWhaleReturn(graphene.ObjectType):
+    id = graphene.ID(description="Hallo")
+
+
+class PullWhale(BalderMutation):
+    class Arguments:
+        id = graphene.ID(description="The ID of the deletable Whale")
+
+    def mutate(root, info, *args, id=None):
+        whale = models.Whale.objects.get(id=id)
+        async_to_sync(channel_layer.send)("docker", {
+            "type": "pull.image",
+            "image": whale.image,
+        })
+        return {"id": id}
+
+    class Meta:
+        type = PullWhaleReturn

@@ -5,14 +5,14 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "elements.settings")
 django.setup()
 
 from channels.auth import AuthMiddlewareStack
-from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.routing import ProtocolTypeRouter, URLRouter, ChannelNameRouter
 from django.conf.urls import url
 
 from django.core.asgi import get_asgi_application
 from balder.consumers import MyGraphqlWsConsumer
 from lok.middlewares.scope.bouncer import BouncerChannelMiddleware
 from lok.middlewares.scope.jwt import JWTChannelMiddleware
-
+from haven.consumers.pull_consumer import PrintConsumer
 
 # The channel routing defines what connections get handled by what consumers,
 # selecting on either the connection type (ProtocolTypeRouter) or properties
@@ -39,5 +39,8 @@ application = ProtocolTypeRouter(
                 ]
             )
         ),
+        "channel": ChannelNameRouter({
+            "dokcer": PrintConsumer.as_asgi(),
+        }),
     }
 )
