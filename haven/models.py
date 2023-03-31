@@ -5,32 +5,17 @@ from haven.enums import WhaleRuntime
 # Create your models here.
 
 
-
 class Whale(models.Model):
-    repo = models.ForeignKey("RepoScan", on_delete=models.CASCADE, null=True, blank=True, related_name="whales")
-    image = models.CharField(max_length=4000)
-    config = models.JSONField(
-        help_text="Environment parameters for the Port", null=True
+    deployment = models.ForeignKey(
+        "Deployment",
+        on_delete=models.CASCADE,
+        related_name="whales",
     )
-    client_id = models.CharField(max_length=1000, unique=True)
-    client_secret = models.CharField(max_length=1000)
-    scopes = models.JSONField()
     url = models.CharField(max_length=1000)
-    runtime = models.CharField(
-        max_length=1000,
-        null=True,
-        choices=WhaleRuntime.choices,
-        default=WhaleRuntime.RUNC.value,
-    )
+    client_id = models.CharField(max_length=1000)
     token = models.CharField(max_length=10000, null=True)
-    version = models.CharField(max_length=1000)
-    identifier = models.CharField(max_length=1000)
-
-
     creator = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-
     created_at = models.DateTimeField(auto_now=True)
-
 
 
 class GithubRepo(models.Model):
@@ -39,41 +24,45 @@ class GithubRepo(models.Model):
     creator = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True)
     branch = models.CharField(max_length=4000)
     created_at = models.DateTimeField(auto_now=True)
-    
+
     @property
     def pyproject_url(self):
         return f"https://raw.githubusercontent.com/{self.user}/{self.repo}/{self.branch}/pyproject.toml"
-    
+
     @property
     def readme_url(self):
         return f"https://raw.githubusercontent.com/{self.user}/{self.repo}/{self.branch}/README.md"
 
     @property
     def manifest_url(self):
-        return f"https://raw.githubusercontent.com/{self.user}/{self.repo}/{self.branch}/.arkitekt/manifest.yaml"    
+        return f"https://raw.githubusercontent.com/{self.user}/{self.repo}/{self.branch}/.arkitekt/manifest.yaml"
 
     @property
-    def deployments(self):
-        return f"https://raw.githubusercontent.com/{self.user}/{self.repo}/{self.branch}/.arkitekt/deployments.yaml"    
+    def deployments_url(self):
+        return f"https://raw.githubusercontent.com/{self.user}/{self.repo}/{self.branch}/.arkitekt/deployments.yaml"
 
 
-class RepoScan(models.Model):
-    name = models.CharField(max_length=4000)
-    repo = models.ForeignKey(GithubRepo, on_delete=models.CASCADE, related_name="scans")
-    created_at = models.DateTimeField(auto_now=True)
-    image = models.CharField(max_length=400, default="jhnnsrs/ome:latest")
-    runtime = models.CharField(max_length=400, default="standard")
+class Deployment(models.Model):
     version = models.CharField(max_length=400, default="latests")
     identifier = models.CharField(max_length=4000)
-    scopes = models.JSONField()
+    scopes = models.JSONField(default=list)
+    requirements = models.JSONField(default=list)
+    repo = models.ForeignKey(
+        GithubRepo, on_delete=models.CASCADE, related_name="deployments", null=True
+    )
+    created_at = models.DateTimeField(auto_now=True)
+    deployed_at = models.DateTimeField(auto_now=True)
+    command = models.CharField(max_length=4000, null=True, default="arkitekt run port")
+    image = models.CharField(max_length=400)
+    entrypoint = models.CharField(max_length=4000, default="app")
 
     def __str__(self):
-        return f"Scan of {self.repo} at {self.created_at}"
+        return f"Deployment at {self.repo} at {self.created_at}"
 
     class Meta:
         ordering = ["-created_at"]
         constraints = [
             models.UniqueConstraint(
-                fields=["identifier", "version"], name="unique_repo_scan"
+                fields=["identifier", "version"], name="unique_deployment for version"
             )
         ]

@@ -15,19 +15,32 @@ class RunWhaleMutation(BalderMutation):
     class Arguments:
         id = graphene.ID(required=True)
         instance = graphene.String(required=False)
+        command = graphene.String(required=False)
         network = graphene.ID(required=False)
         runtime = graphene.Argument(enums.DockerRuntime, required=False)
 
-    def mutate(self, info, id, instance="default", network=None, runtime=None):
+    def mutate(
+        self, info, id, instance="default", command=None, network=None, runtime=None
+    ):
         whale = models.Whale.objects.get(id=id)
+
+        command = command or whale.deployment.command
+        requirements = whale.deployment.requirements
+
+        if "gpu" in requirements:
+            device_requests = [
+                docker.types.DeviceRequest(count=-1, capabilities=[["gpu"]])
+            ]
+        else:
+            device_requests = None
 
         try:
             container = api.containers.get(f"{whale.id}-{instance}")
             return container
         except docker.errors.NotFound:
             container = api.containers.run(
-                whale.image,
-                command='arkitekt run port',
+                whale.deployment.image,
+                command=command,
                 detach=True,
                 name=f"{whale.id}-{instance}",
                 labels={
@@ -36,7 +49,7 @@ class RunWhaleMutation(BalderMutation):
                     "host": f"{settings.DOCK['HOST']}",
                 },
                 restart_policy={"Name": "on-failure", "MaximumRetryCount": 5},
-                runtime=runtime or whale.runtime or "runc",
+                device_requests=device_requests,
                 environment={
                     "FAKTS_URL": whale.url,
                     "FAKTS_TOKEN": whale.token,
@@ -51,36 +64,39 @@ class RunWhaleMutation(BalderMutation):
         operation = "runWhale"
 
 
-
-
 class CreateWhaleMutation(BalderMutation):
-
-
     class Arguments:
-        version = graphene.String(required=True)
-        identifier = graphene.String(required=True)
-        image = graphene.String(required=True)
+        deployment = graphene.ID(required=True)
         client_id = graphene.String(required=True)
         token = graphene.String(required=True)
-        client_secret = graphene.String(required=True)
-        scopes = graphene.List(graphene.String, required=True)
         fakt_endpoint = graphene.String(required=False)
-        runtime = graphene.Argument(enums.DockerRuntime, required=False)
 
     @bounced()
-    def mutate(self, info, version, identifier, image, client_id, client_secret, scopes, fakt_endpoint= None, runtime=None, token=None):
-
+    def mutate(
+        self,
+        info,
+        deployment,
+        client_id,
+        token,
+        fakt_endpoint=None,
+    ):
         if not fakt_endpoint:
             fakt_endpoint = settings.FAKTS_URL
 
-
-        whale, x = models.Whale.objects.update_or_create(client_id=client_id, defaults= dict(version=version, identifier=identifier, image=image, runtime=runtime, client_secret=client_secret, scopes=scopes, url=fakt_endpoint, creator=info.context.user, token=token))
+        whale, x = models.Whale.objects.update_or_create(
+            deployment_id=deployment,
+            creator=info.context.user,
+            defaults=dict(
+                token=token,
+                url=fakt_endpoint,
+                client_id=client_id,
+            ),
+        )
         return whale
 
     class Meta:
         type = types.Whale
         operation = "createWhale"
-
 
 
 class DeleteWhaleReturn(graphene.ObjectType):
@@ -106,14 +122,17 @@ class PullWhaleReturn(graphene.ObjectType):
 
 class PullWhale(BalderMutation):
     class Arguments:
-        id = graphene.ID(description="The ID of the deletable Whale")
+        id = graphene.ID(description="The ID of the deletabssle Whale")
 
     def mutate(root, info, *args, id=None):
         whale = models.Whale.objects.get(id=id)
-        async_to_sync(channel_layer.send)("docker", {
-            "type": "pull.image",
-            "image": whale.image,
-        })
+        async_to_sync(channel_layer.send)(
+            "docker",
+            {
+                "type": "pull.image",
+                "image": whale.deployment.image,
+            },
+        )
         return {"id": id}
 
     class Meta:

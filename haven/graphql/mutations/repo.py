@@ -9,6 +9,7 @@ import toml
 from lok import bounced
 import yaml
 
+
 class ScanRepoMutation(BalderMutation):
     class Arguments:
         id = graphene.ID(required=True)
@@ -17,30 +18,34 @@ class ScanRepoMutation(BalderMutation):
         repo = models.GithubRepo.objects.get(id=id)
 
         # download the pryproject toml file
-        x = requests.get(repo.deployments)
+        x = requests.get(repo.deployments_url)
         # parse the file
         z = yaml.safe_load(x.text)
         print(z)
 
-        for deployment in z["deployments"]: 
-            s , _ = models.RepoScan.objects.update_or_create(
+        deps = []
+
+        for deployment in z["deployments"]:
+            s, _ = models.Deployment.objects.update_or_create(
                 version=deployment["version"],
                 identifier=deployment["identifier"],
                 defaults=dict(
-                repo=repo,
-                name=deployment["identifier"],
-                image=deployment["deployed"]["docker"],
-                scopes=deployment["scopes"],
-                runtime=deployment["deployed"]["runtime"],
-                )
+                    repo=repo,
+                    command=deployment["command"],
+                    entrypoint=deployment["entrypoint"],
+                    image=deployment["image"],
+                    requirements=deployment["requirements"],
+                    scopes=deployment["scopes"],
+                ),
             )
+            deps.append(s)
 
-        return s
-
-
+        # TODO: FIX this once on a proper computer
+        return deps[0]
 
     class Meta:
-        type = types.RepoScan
+        list = True
+        type = types.Deployment
         operation = "scanRepo"
 
 
@@ -58,7 +63,6 @@ class CreateGithubRepo(BalderMutation):
 
     @bounced()
     def mutate(root, info, user=None, repo=None, branch=None):
-
         assert user is not None, "Provide User"
         assert repo is not None, "Provide Repo"
         assert branch is not None, "Provide Branch"
@@ -73,7 +77,6 @@ class CreateGithubRepo(BalderMutation):
 
     class Meta:
         type = types.GithubRepo
-
 
 
 class DeleteGithubRepoReturn(graphene.ObjectType):
