@@ -34,11 +34,30 @@ ALLOWED_HOSTS = conf.django.hosts
 CORS_ALLOW_ALL_ORIGINS = True
 
 
+AWS_ACCESS_KEY_ID = conf.minio.access_key
+AWS_SECRET_ACCESS_KEY = conf.minio.secret_key
+AWS_S3_ENDPOINT_URL = f"{conf.minio.protocol}://{conf.minio.host}:{conf.minio.port}"
+# AWS_S3_PUBLIC_ENDPOINT_URL = (
+#    f"{conf.minio.public.protocol}://{conf.minio.public.host}:{conf.minio.public.port}"
+# )
+AWS_S3_URL_PROTOCOL = f"{conf.minio.protocol}:"
+AWS_S3_FILE_OVERWRITE = False
+AWS_QUERYSTRING_EXPIRE = 3600
+
+
+AWS_STORAGE_BUCKET_NAME = conf.minio.buckets[0].name
+AWS_DEFAULT_ACL = "private"
+AWS_S3_USE_SSL = True
+AWS_S3_SECURE_URLS = False  # Should resort to True if using in Production behind TLS
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+
 STATIC_ROOT = "/var/www/static"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 FAKTS_URL = "http://lok:8000"
-
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "media/"
 LOK = {
     "PUBLIC_KEY": conf.lok.public_key,
     "KEY_TYPE": conf.lok.key_type,
@@ -61,6 +80,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "whitenoise.runserver_nostatic",
     "django_filters",
     "taggit",
     "channels",

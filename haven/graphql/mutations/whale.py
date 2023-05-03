@@ -20,7 +20,7 @@ class RunWhaleMutation(BalderMutation):
         runtime = graphene.Argument(enums.DockerRuntime, required=False)
 
     def mutate(
-        self, info, id, instance="default", command=None, network=None, runtime=None
+        self, info, id, instance="main", command=None, network=None, runtime=None
     ):
         whale = models.Whale.objects.get(id=id)
 
@@ -53,6 +53,7 @@ class RunWhaleMutation(BalderMutation):
                 environment={
                     "FAKTS_URL": whale.url,
                     "FAKTS_TOKEN": whale.token,
+                    "REKUEST_INSTANCE": instance,
                 },
                 network=network
                 or api.networks.list(names=[settings.DOCK["DEFAULT_NETWORK"]])[0].id,

@@ -8,9 +8,6 @@ import datetime
 
 
 class GithubRepo(BalderObject):
-    version = graphene.String(required=True)
-    identifier = graphene.String(required=True)
-    scopes = graphene.List(graphene.String, required=True)
     readme = graphene.String()
 
     def resolve_readme(self, info):
@@ -21,6 +18,15 @@ class GithubRepo(BalderObject):
 
 
 class Deployment(BalderObject):
+    version = graphene.String(required=True)
+    identifier = graphene.String(required=True)
+    scopes = graphene.List(graphene.String, required=True)
+    logo = graphene.String(required=False)
+
+    def resolve_logo(self, info):
+        return self.logo.url if self.logo else None
+
+
     class Meta:
         model = models.Deployment
 

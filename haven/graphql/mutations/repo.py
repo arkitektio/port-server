@@ -8,7 +8,7 @@ import requests
 import toml
 from lok import bounced
 import yaml
-
+from haven.utils import download_logo
 
 class ScanRepoMutation(BalderMutation):
     class Arguments:
@@ -18,7 +18,7 @@ class ScanRepoMutation(BalderMutation):
         repo = models.GithubRepo.objects.get(id=id)
 
         # download the pryproject toml file
-        x = requests.get(repo.deployments_url)
+        x = requests.get(repo.deployments_url, headers={'Cache-Control': 'no-cache'})
         # parse the file
         z = yaml.safe_load(x.text)
         print(z)
@@ -36,8 +36,15 @@ class ScanRepoMutation(BalderMutation):
                     image=deployment["image"],
                     requirements=deployment["requirements"],
                     scopes=deployment["scopes"],
+                    original_logo=deployment.get("logo", None),
                 ),
             )
+
+            logo = deployment.get("logo", None)
+            if logo:
+                s.logo.save(f"logo{s.id}.png", download_logo(logo))
+                s.save()
+
             deps.append(s)
 
         # TODO: FIX this once on a proper computer
