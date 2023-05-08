@@ -28,3 +28,15 @@ class ContainerStatus(graphene.Enum):
     PAUSED = "paused"
     EXITED = "exited"
     DEAD = "dead"
+
+
+class PullProgressStatus(graphene.Enum):
+    """Docker pull progress status."""
+    PULLING = "Pulling"
+    PULLED = "Pulled"
+
+class UpProgressStatus(graphene.Enum):
+    """Docker pull progress status."""
+    DOWNLOADING = "downloading"
+    EXTRACTING = "extracting"
+    DONE = "done"

@@ -3,8 +3,24 @@ from haven import models
 import graphene
 from graphene.types.generic import GenericScalar
 from haven.client import api
-from haven.enums import DockerRuntime, ContainerStatus
+from haven.enums import DockerRuntime, ContainerStatus, PullProgressStatus, UpProgressStatus
 import datetime
+
+
+class PullEvent(graphene.ObjectType):
+    progress = graphene.Float()
+    status = graphene.Field(PullProgressStatus)
+
+
+class UpEvent(graphene.ObjectType):
+    container = graphene.ID()
+
+
+class WhaleEvent(graphene.ObjectType):
+    pull =  graphene.Field(PullEvent)
+    up = graphene.Field(UpEvent)
+    whale = graphene.ID()
+
 
 
 class GithubRepo(BalderObject):
@@ -35,20 +51,21 @@ class Whale(BalderObject):
     pulled = graphene.Boolean()
     latest_pull = graphene.DateTime()
     containers = graphene.List(lambda: Container)
+    latest_event = graphene.Field(WhaleEvent)
 
     def resolve_containers(self, info):
         return api.containers.list(filters={"label": [f"whale={self.id}"]})
 
     def resolve_pulled(self, info):
         try:
-            api.images.get(self.image)
+            api.images.get(self.deployment.image)
             return True
         except:
             return False
 
     def resolve_latest_pull(self, info):
         try:
-            l = api.images.get(self.image).attrs["Created"]
+            l = api.images.get(self.deployment.image).attrs["Created"]
             l = l.replace("'", "")
             l = l[:24]
             print(l)

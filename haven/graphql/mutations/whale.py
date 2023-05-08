@@ -17,51 +17,34 @@ class RunWhaleMutation(BalderMutation):
         instance = graphene.String(required=False)
         command = graphene.String(required=False)
         network = graphene.ID(required=False)
-        runtime = graphene.Argument(enums.DockerRuntime, required=False)
 
     def mutate(
-        self, info, id, instance="main", command=None, network=None, runtime=None
+        self, info, id, instance="main", command=None, network=None
     ):
         whale = models.Whale.objects.get(id=id)
-
-        command = command or whale.deployment.command
-        requirements = whale.deployment.requirements
-
-        if "gpu" in requirements:
-            device_requests = [
-                docker.types.DeviceRequest(count=-1, capabilities=[["gpu"]])
-            ]
-        else:
-            device_requests = None
-
         try:
-            container = api.containers.get(f"{whale.id}-{instance}")
-            return container
-        except docker.errors.NotFound:
-            container = api.containers.run(
-                whale.deployment.image,
-                command=command,
-                detach=True,
-                name=f"{whale.id}-{instance}",
-                labels={
-                    "whale": f"{whale.id}",
-                    "instance": f"{instance}",
-                    "host": f"{settings.DOCK['HOST']}",
-                },
-                restart_policy={"Name": "on-failure", "MaximumRetryCount": 5},
-                device_requests=device_requests,
-                environment={
-                    "FAKTS_URL": whale.url,
-                    "FAKTS_TOKEN": whale.token,
-                    "REKUEST_INSTANCE": instance,
-                },
-                network=network
-                or api.networks.list(names=[settings.DOCK["DEFAULT_NETWORK"]])[0].id,
-            )
-            return container
+            api.images.get(whale.deployment.image)
+        except docker.errors.ImageNotFound:
+            raise Exception("Image not found. Please pull first")
+
+
+        async_to_sync(channel_layer.send)(
+            "docker",
+            {
+                "type": "up.whale",
+                "whale": whale.id,
+                "instance": instance,
+                "network": network,
+                "command": command,
+            },
+        )
+
+        print("sent up.whale")
+
+        return whale
 
     class Meta:
-        type = types.Container
+        type = types.Whale
         operation = "runWhale"
 
 
@@ -130,11 +113,25 @@ class PullWhale(BalderMutation):
         async_to_sync(channel_layer.send)(
             "docker",
             {
-                "type": "pull.image",
-                "image": whale.deployment.image,
+                "type": "pull.whale",
+                "whale": whale.id,
             },
         )
         return {"id": id}
 
     class Meta:
         type = PullWhaleReturn
+
+
+class PurgeWhale(BalderMutation):
+    class Arguments:
+        id = graphene.ID(description="The ID of the deletabssle Whale")
+
+    def mutate(root, info, *args, id=None):
+        whale = models.Whale.objects.get(id=id)
+        api.images.remove(whale.deployment.image)
+
+        return whale
+
+    class Meta:
+        type = types.Whale
