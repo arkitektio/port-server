@@ -6,11 +6,12 @@ LABEL maintainer="jhnnsrs@gmail.com"
 RUN pip install poetry rich
 ENV PYTHONUNBUFFERED=1
 
+
+
 # Copy dependencies
 COPY pyproject.toml /
 RUN poetry config virtualenvs.create false 
 RUN poetry install
-
 
 # Install Application
 RUN mkdir /workspace

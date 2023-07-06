@@ -1,7 +1,7 @@
 from balder.types.query import BalderQuery
 import graphene
 import docker
-from haven import types, models, enums
+from haven import types, models, enums, filters
 from haven.client import api
 from django.conf import settings
 from functools import reduce
@@ -16,7 +16,9 @@ class Deployments(BalderQuery):
 
     class Meta:
         type = types.Deployment
+        filter= filters.DeploymentFilter    
         list = True
+        paginate = True
         operation = "deployments"
 
 

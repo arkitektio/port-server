@@ -11,6 +11,7 @@ class Whales(BalderQuery):
     class Meta:
         type = types.Whale
         filter = filters.WhaleFilter
+        paginate = True
         list = True
 
 

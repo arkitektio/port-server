@@ -24,6 +24,7 @@ django-storages = "^1.13.2"
 boto3 = "^1.26.124"
 whitenoise = "^6.4.0"
 pillow = "^9.5.0"
+supervisor = "^4.2.5"
 
 
 [build-system]

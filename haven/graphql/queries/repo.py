@@ -9,6 +9,7 @@ class GithubRepos(BalderQuery):
     class Meta:
         filter = GithubRepoFilter
         type = types.GithubRepo
+        paginate = True
         list = True
 
 class DetailGithubRepo(BalderQuery):

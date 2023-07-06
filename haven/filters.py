@@ -40,4 +40,7 @@ class GithubRepoFilter(django_filters.FilterSet):
 
 
 class WhaleFilter(django_filters.FilterSet):
+    search = django_filters.CharFilter(field_name="deployment__identifier", lookup_expr="icontains")
+
+class DeploymentFilter(django_filters.FilterSet):
     search = django_filters.CharFilter(field_name="identifier", lookup_expr="icontains")

@@ -22,6 +22,9 @@ class DockerApiConsumer(SyncConsumer):
 
         keeping_progress = []
         finished = []
+
+        WhaleUpdateSubscription.broadcast({"whale": whale_id, "pull": { "status" : "Pulling", "progress": 0.5 }}, [WhaleUpdateSubscription.WHALEID_GROUP(whale_id),WhaleUpdateSubscription.USERID_GROUP(whale.creator.id)])
+                
         
 
 
