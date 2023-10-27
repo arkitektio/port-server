@@ -25,7 +25,6 @@ class IDChoiceFilter(django_filters.MultipleChoiceFilter):
 
 
 class IdsFilter(django_filters.FilterSet):
-
     ids = IDChoiceFilter(label="Filter by values")
 
     def my_values_filter(self, queryset, name, value):
@@ -40,7 +39,12 @@ class GithubRepoFilter(django_filters.FilterSet):
 
 
 class WhaleFilter(django_filters.FilterSet):
-    search = django_filters.CharFilter(field_name="deployment__identifier", lookup_expr="icontains")
+    search = django_filters.CharFilter(
+        field_name="deployment__manifest__identifier", lookup_expr="icontains"
+    )
+
 
 class DeploymentFilter(django_filters.FilterSet):
-    search = django_filters.CharFilter(field_name="identifier", lookup_expr="icontains")
+    search = django_filters.CharFilter(
+        field_name="manifest__identifier", lookup_expr="icontains"
+    )

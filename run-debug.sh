@@ -18,7 +18,7 @@ echo "=> Collecting Static.."
 python manage.py collectstatic --noinput
 # Start the first process
 echo "=> Starting Server"
-python manage.py runserver 0.0.0.0:8050 & python manage.py runworker docker
+python manage.py runserver 0.0.0.0:80 & python manage.py runworker docker
 
 
 

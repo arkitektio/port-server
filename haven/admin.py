@@ -5,3 +5,4 @@ from .models import *
 admin.site.register(Whale)
 admin.site.register(GithubRepo)
 admin.site.register(Deployment)
+admin.site.register(Manifest)

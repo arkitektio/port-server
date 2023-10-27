@@ -45,7 +45,7 @@ AWS_S3_FILE_OVERWRITE = False
 AWS_QUERYSTRING_EXPIRE = 3600
 
 
-AWS_STORAGE_BUCKET_NAME = conf.minio.buckets[0].name
+AWS_STORAGE_BUCKET_NAME = conf.minio.buckets.media
 AWS_DEFAULT_ACL = "private"
 AWS_S3_USE_SSL = True
 AWS_S3_SECURE_URLS = False  # Should resort to True if using in Production behind TLS
@@ -55,7 +55,7 @@ DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 STATIC_ROOT = "/var/www/static"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-FAKTS_URL = "http://lok:8000"
+FAKTS_URL = "http://lok"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "media/"
 LOK = {
@@ -67,7 +67,7 @@ LOK = {
 SUPERUSERS = [
     {
         "USERNAME": conf.django.admin.username,
-        "EMAIL": conf.django.admin.email,
+        "EMAIL": "fake@fake.com",
         "PASSWORD": conf.django.admin.password,
     }
 ]
@@ -173,7 +173,6 @@ AUTHENTICATION_BACKENDS = (
 
 DOCK = {
     "HOST": "port",
-    "DEFAULT_NETWORK": conf.virtualizer.network,
 }
 
 

@@ -15,18 +15,16 @@ class RunWhaleMutation(BalderMutation):
     class Arguments:
         id = graphene.ID(required=True)
         instance = graphene.String(required=False)
-        command = graphene.String(required=False)
         network = graphene.ID(required=False)
 
-    def mutate(
-        self, info, id, instance="main", command=None, network=None
-    ):
+    def mutate(self, info, id, instance="main", command=None, network=None):
         whale = models.Whale.objects.get(id=id)
-        try:
-            api.images.get(whale.deployment.image)
-        except docker.errors.ImageNotFound:
-            raise Exception("Image not found. Please pull first")
 
+        try:
+            if network:
+                network = api.networks.get(network)
+        except Exception:
+            raise Exception("Network not found")
 
         async_to_sync(channel_layer.send)(
             "docker",
@@ -34,8 +32,7 @@ class RunWhaleMutation(BalderMutation):
                 "type": "up.whale",
                 "whale": whale.id,
                 "instance": instance,
-                "network": network,
-                "command": command,
+                "network": network.id if network else None,
             },
         )
 

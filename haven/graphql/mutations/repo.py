@@ -10,6 +10,62 @@ from lok import bounced
 import yaml
 from haven.utils import download_logo
 
+
+class ScanRepoReturn(graphene.ObjectType):
+    status = graphene.String()
+    message = graphene.String()
+    repo = graphene.Field(types.GithubRepo)
+    deployments = graphene.List(types.Deployment)
+
+
+def scan_repo(repo: models.GithubRepo):
+    # download the pryproject toml file
+    x = requests.get(repo.deployments_url, headers={"Cache-Control": "no-cache"})
+    # parse the file
+    z = yaml.safe_load(x.text)
+    print(z)
+
+    deps = []
+    try:
+        for deployment_dict in z["deployments"]:
+            manifest_dict = deployment_dict["manifest"]
+
+            manifest, _ = models.Manifest.objects.update_or_create(
+                version=manifest_dict["version"],
+                identifier=manifest_dict["identifier"],
+                defaults=dict(
+                    logo=manifest_dict.get("logo", None),
+                    scopes=manifest_dict["scopes"],
+                    requirements=manifest_dict["requirements"],
+                    entrypoint=manifest_dict["entrypoint"],
+                ),
+            )
+
+            logo = manifest_dict.get("logo", None)
+            if logo:
+                manifest.logo.save(f"logo{manifest.id}.png", download_logo(logo))
+                manifest.save()
+
+            dep, _ = models.Deployment.objects.update_or_create(
+                deployment_id=deployment_dict["deployment_id"],
+                defaults=dict(
+                    repo=repo,
+                    manifest=manifest,
+                    builder=deployment_dict["builder"],
+                    image=deployment_dict["image"],
+                    definitions=deployment_dict["definitions"],
+                    deployed_at=deployment_dict["deployed_at"],
+                    build_id=deployment_dict["build_id"],
+                ),
+            )
+
+            deps.append(dep)
+    except KeyError as e:
+        pass
+
+    return deps
+
+
 class ScanRepoMutation(BalderMutation):
     class Arguments:
         id = graphene.ID(required=True)
@@ -18,41 +74,59 @@ class ScanRepoMutation(BalderMutation):
         repo = models.GithubRepo.objects.get(id=id)
 
         # download the pryproject toml file
-        x = requests.get(repo.deployments_url, headers={'Cache-Control': 'no-cache'})
+        x = requests.get(repo.deployments_url, headers={"Cache-Control": "no-cache"})
         # parse the file
         z = yaml.safe_load(x.text)
         print(z)
 
         deps = []
+        try:
+            for deployment_dict in z["deployments"]:
+                manifest_dict = deployment_dict["manifest"]
 
-        for deployment in z["deployments"]:
-            s, _ = models.Deployment.objects.update_or_create(
-                version=deployment["version"],
-                identifier=deployment["identifier"],
-                defaults=dict(
-                    repo=repo,
-                    command=deployment["command"],
-                    entrypoint=deployment["entrypoint"],
-                    image=deployment["image"],
-                    requirements=deployment["requirements"],
-                    scopes=deployment["scopes"],
-                    original_logo=deployment.get("logo", None),
-                ),
+                manifest, _ = models.Manifest.objects.update_or_create(
+                    version=manifest_dict["version"],
+                    identifier=manifest_dict["identifier"],
+                    defaults=dict(
+                        logo=manifest_dict.get("logo", None),
+                        scopes=manifest_dict["scopes"],
+                        requirements=manifest_dict["requirements"],
+                        entrypoint=manifest_dict["entrypoint"],
+                    ),
+                )
+
+                logo = manifest_dict.get("logo", None)
+                if logo:
+                    manifest.logo.save(f"logo{manifest.id}.png", download_logo(logo))
+                    manifest.save()
+
+                dep, _ = models.Deployment.objects.update_or_create(
+                    deployment_id=deployment_dict["deployment_id"],
+                    defaults=dict(
+                        repo=repo,
+                        manifest=manifest,
+                        builder=deployment_dict["builder"],
+                        image=deployment_dict["image"],
+                        definitions=deployment_dict["definitions"],
+                        deployed_at=deployment_dict["deployed_at"],
+                        build_id=deployment_dict["build_id"],
+                    ),
+                )
+
+                deps.append(dep)
+        except KeyError as e:
+            pass
+            return ScanRepoReturn(
+                status="error", message=str(e), repo=repo, deployments=[]
             )
 
-            logo = deployment.get("logo", None)
-            if logo:
-                s.logo.save(f"logo{s.id}.png", download_logo(logo))
-                s.save()
-
-            deps.append(s)
-
-        # TODO: FIX this once on a proper computer
-        return deps[0]
+        return ScanRepoReturn(
+            status="success", message="Scanned Repo", repo=repo, deployments=deps
+        )
 
     class Meta:
         list = True
-        type = types.Deployment
+        type = ScanRepoReturn
         operation = "scanRepo"
 
 
@@ -74,11 +148,13 @@ class CreateGithubRepo(BalderMutation):
         assert repo is not None, "Provide Repo"
         assert branch is not None, "Provide Branch"
 
-        model = models.GithubRepo.objects.create(
+        model, _ = models.GithubRepo.objects.get_or_create(
             user=user,
             repo=repo,
             branch=branch,
         )
+
+        deps = scan_repo(model)
 
         return model
 

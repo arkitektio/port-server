@@ -18,5 +18,5 @@ echo "=> Collecting Static.."
 python manage.py collectstatic --noinput
 # Start the first process
 echo "=> Starting Servers"
-daphne -b 0.0.0.0 -p 8050 port.asgi:application
+daphne -b 0.0.0.0 -p 80 port.asgi:application
 

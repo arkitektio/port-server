@@ -3,7 +3,12 @@ from haven import models
 import graphene
 from graphene.types.generic import GenericScalar
 from haven.client import api
-from haven.enums import DockerRuntime, ContainerStatus, PullProgressStatus, UpProgressStatus
+from haven.enums import (
+    DockerRuntime,
+    ContainerStatus,
+    PullProgressStatus,
+    UpProgressStatus,
+)
 import datetime
 
 
@@ -17,10 +22,9 @@ class UpEvent(graphene.ObjectType):
 
 
 class WhaleEvent(graphene.ObjectType):
-    pull =  graphene.Field(PullEvent)
+    pull = graphene.Field(PullEvent)
     up = graphene.Field(UpEvent)
     whale = graphene.ID()
-
 
 
 class GithubRepo(BalderObject):
@@ -33,7 +37,7 @@ class GithubRepo(BalderObject):
         model = models.GithubRepo
 
 
-class Deployment(BalderObject):
+class Manifest(BalderObject):
     version = graphene.String(required=True)
     identifier = graphene.String(required=True)
     scopes = graphene.List(graphene.String, required=True)
@@ -42,7 +46,11 @@ class Deployment(BalderObject):
     def resolve_logo(self, info):
         return self.logo.url if self.logo else None
 
+    class Meta:
+        model = models.Manifest
 
+
+class Deployment(BalderObject):
     class Meta:
         model = models.Deployment
 
