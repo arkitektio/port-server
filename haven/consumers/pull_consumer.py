@@ -113,7 +113,7 @@ class DockerApiConsumer(SyncConsumer):
 
         network = network or get_my_networks()[0].id
 
-        command = f"arkitekt run prod -b {whale.deployment.builder} -i {instance} -t {whale.token} --url {whale.url}"
+        command = f"arkitekt run prod -i {instance} -t {whale.token} --url {whale.url}"
         print(command)
         try:
             container = api.containers.get(f"{whale.id}-{instance}")

@@ -9,7 +9,9 @@ import toml
 from lok import bounced
 import yaml
 from haven.utils import download_logo
+import logging
 
+logger = logging.getLogger(__name__)
 
 class ScanRepoReturn(graphene.ObjectType):
     status = graphene.String()
@@ -51,7 +53,9 @@ def scan_repo(repo: models.GithubRepo):
                 defaults=dict(
                     repo=repo,
                     manifest=manifest,
-                    builder=deployment_dict["builder"],
+                    flavour=deployment_dict.get("flavour", "vanilla"),
+                    selectors=deployment_dict.get("selectors", []),
+                    builder=deployment_dict.get("builder", "no-builder"),
                     image=deployment_dict["image"],
                     definitions=deployment_dict["definitions"],
                     deployed_at=deployment_dict["deployed_at"],
@@ -61,6 +65,7 @@ def scan_repo(repo: models.GithubRepo):
 
             deps.append(dep)
     except KeyError as e:
+        logger.error(e, exc_info=True)
         pass
 
     return deps
@@ -73,52 +78,7 @@ class ScanRepoMutation(BalderMutation):
     def mutate(self, info, id, instance="default", network=None, runtime=None):
         repo = models.GithubRepo.objects.get(id=id)
 
-        # download the pryproject toml file
-        x = requests.get(repo.deployments_url, headers={"Cache-Control": "no-cache"})
-        # parse the file
-        z = yaml.safe_load(x.text)
-        print(z)
-
-        deps = []
-        try:
-            for deployment_dict in z["deployments"]:
-                manifest_dict = deployment_dict["manifest"]
-
-                manifest, _ = models.Manifest.objects.update_or_create(
-                    version=manifest_dict["version"],
-                    identifier=manifest_dict["identifier"],
-                    defaults=dict(
-                        logo=manifest_dict.get("logo", None),
-                        scopes=manifest_dict["scopes"],
-                        requirements=manifest_dict["requirements"],
-                        entrypoint=manifest_dict["entrypoint"],
-                    ),
-                )
-
-                logo = manifest_dict.get("logo", None)
-                if logo:
-                    manifest.logo.save(f"logo{manifest.id}.png", download_logo(logo))
-                    manifest.save()
-
-                dep, _ = models.Deployment.objects.update_or_create(
-                    deployment_id=deployment_dict["deployment_id"],
-                    defaults=dict(
-                        repo=repo,
-                        manifest=manifest,
-                        builder=deployment_dict["builder"],
-                        image=deployment_dict["image"],
-                        definitions=deployment_dict["definitions"],
-                        deployed_at=deployment_dict["deployed_at"],
-                        build_id=deployment_dict["build_id"],
-                    ),
-                )
-
-                deps.append(dep)
-        except KeyError as e:
-            pass
-            return ScanRepoReturn(
-                status="error", message=str(e), repo=repo, deployments=[]
-            )
+        deps = scan_repo(repo)
 
         return ScanRepoReturn(
             status="success", message="Scanned Repo", repo=repo, deployments=deps

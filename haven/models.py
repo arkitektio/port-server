@@ -68,9 +68,12 @@ class Manifest(models.Model):
         ]
 
 
+
 class Deployment(models.Model):
     deployment_id = models.CharField(max_length=400, unique=True, default=uuid.uuid4)
     build_id = models.CharField(max_length=400, default=uuid.uuid4)
+    flavour = models.CharField(max_length=400, default="vanilla")
+    selectors = models.JSONField(default=list)
     manifest = models.ForeignKey(
         Manifest, on_delete=models.CASCADE, related_name="deployments"
     )
