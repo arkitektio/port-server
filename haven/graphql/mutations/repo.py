@@ -57,7 +57,6 @@ def scan_repo(repo: models.GithubRepo):
                     selectors=deployment_dict.get("selectors", []),
                     builder=deployment_dict.get("builder", "no-builder"),
                     image=deployment_dict["image"],
-                    definitions=deployment_dict["definitions"],
                     deployed_at=deployment_dict["deployed_at"],
                     build_id=deployment_dict["build_id"],
                 ),
